@@ -13,14 +13,19 @@ declare global {
   }
 }
 
-// Google's official reCAPTCHA v2 TEST key — always passes, shows a "testing only" banner.
-// Swap for a real site key from https://www.google.com/recaptcha/admin when the domain is live.
+// Google's official reCAPTCHA v2 TEST key. Swap for a real site key from
+// https://www.google.com/recaptcha/admin when the domain is live.
 const RECAPTCHA_SITE_KEY = "6LeIxAcTAAAAAJcZVRqyHh71UMIEGNQ_MXjiZKhI";
+
+// Formspree endpoint. Replace YOUR_FORM_ID with the id from your Formspree
+// dashboard (the /f/xxxxxxxx part of the form endpoint URL).
+const FORMSPREE_ENDPOINT = "https://formspree.io/f/mjgnyzlk";
 
 export function ContactForm() {
   const captchaRef = useRef<HTMLDivElement>(null);
   const widgetId = useRef<number | null>(null);
   const [error, setError] = useState("");
+  const [status, setStatus] = useState<"idle" | "sending" | "sent">("idle");
 
   useEffect(() => {
     const renderCaptcha = () => {
@@ -42,7 +47,7 @@ export function ContactForm() {
     }
   }, []);
 
-  function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
+  async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
     e.preventDefault();
     setError("");
 
@@ -52,22 +57,54 @@ export function ContactForm() {
       return;
     }
 
-    const data = new FormData(e.currentTarget);
-    const first = data.get("firstName") || "";
-    const last = data.get("lastName") || "";
-    const email = data.get("email") || "";
-    const role = data.get("role") || "";
-    const message = data.get("message") || "";
+    const form = e.currentTarget;
+    const data = new FormData(form);
 
-    const subject = encodeURIComponent(`Website inquiry from ${first} ${last}`);
-    const body = encodeURIComponent(
-      `Name: ${first} ${last}\nEmail: ${email}\nI am a: ${role}\n\n${message}`
+    setStatus("sending");
+    try {
+      const res = await fetch(FORMSPREE_ENDPOINT, {
+        method: "POST",
+        body: data,
+        headers: { Accept: "application/json" },
+      });
+      if (res.ok) {
+        setStatus("sent");
+        form.reset();
+        window.grecaptcha?.reset(widgetId.current ?? undefined);
+      } else {
+        setStatus("idle");
+        setError("Something went wrong sending your message. Please try again or email us directly.");
+      }
+    } catch {
+      setStatus("idle");
+      setError("Something went wrong sending your message. Please try again or email us directly.");
+    }
+  }
+
+  if (status === "sent") {
+    return (
+      <div className="py-12 text-center">
+        <p className="font-bold text-lg mb-2" style={{ color: "var(--wsh-navy)" }}>Message sent.</p>
+        <p className="text-sm" style={{ color: "var(--wsh-muted)" }}>
+          Thanks for reaching out. We&apos;ll get back to you within one business day.
+        </p>
+      </div>
     );
-    window.location.href = `mailto:Doug.wise@wisestreamgroup.com?subject=${subject}&body=${body}`;
   }
 
   return (
     <form className="flex flex-col gap-5" onSubmit={handleSubmit}>
+      {/* Honeypot: invisible to humans, bots fill it and get rejected */}
+      <input
+        type="text"
+        name="_gotcha"
+        tabIndex={-1}
+        autoComplete="off"
+        style={{ position: "absolute", left: "-9999px", height: 0, width: 0, opacity: 0 }}
+        aria-hidden="true"
+      />
+      <input type="hidden" name="_subject" value="New inquiry from wisestreamhealth.com" />
+
       <div className="grid grid-cols-2 gap-4">
         <div className="flex flex-col gap-1.5">
           <label className="text-xs font-semibold tracking-wide uppercase" style={{ color: "var(--wsh-muted)" }}>First Name</label>
@@ -105,10 +142,11 @@ export function ContactForm() {
 
       <button
         type="submit"
+        disabled={status === "sending"}
         className="w-full py-4 rounded-lg font-bold text-white text-sm transition-all hover:-translate-y-0.5"
-        style={{ background: "var(--wsh-sky)" }}
+        style={{ background: "var(--wsh-sky)", opacity: status === "sending" ? 0.7 : 1 }}
       >
-        Send Message
+        {status === "sending" ? "Sending…" : "Send Message"}
       </button>
     </form>
   );
