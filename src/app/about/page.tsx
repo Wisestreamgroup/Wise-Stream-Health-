@@ -81,7 +81,8 @@ export default function AboutPage() {
               <h3 className="font-bold text-xl" style={{ color: "var(--wsh-navy)" }}>Liz DeLaPaz Farber</h3>
               <p className="text-sm font-semibold mt-1 mb-3" style={{ color: "var(--wsh-sky)" }}>Partner · Finance &amp; Payroll</p>
               <p className="text-sm leading-relaxed" style={{ color: "var(--wsh-muted)" }}>
-                Leads the financial side of WiseStream Health, including payroll,
+                A registered nurse with 20 years of clinical experience, Liz
+                leads the financial side of WiseStream Health, including payroll,
                 billing, and everything that keeps clinicians paid on time.
               </p>
               <a
