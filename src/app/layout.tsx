@@ -14,7 +14,7 @@ const jakarta = Plus_Jakarta_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "WiseStream Health | Healthcare Recruiting",
+  title: "WiseStream Health | Healthcare Talent Solutions",
   description: "Specialized recruiting for travel nurses, CRNAs, and advanced practice providers across the country.",
 };
 

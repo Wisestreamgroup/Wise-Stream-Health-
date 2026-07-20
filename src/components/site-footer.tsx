@@ -103,7 +103,7 @@ export function SiteFooter() {
               WiseStream Health
             </p>
             <p className="text-[0.72rem] font-semibold tracking-[2.5px] uppercase mt-1" style={{ color: "var(--wsh-sky-l)" }}>
-              Healthcare Recruiting
+              Healthcare Talent Solutions
             </p>
             <div className="mt-4 flex flex-col gap-1 text-sm">
               <Link href="/contact" className="no-underline transition-colors" style={{ color: "rgba(255,255,255,0.6)" }}>800.393.4005</Link>

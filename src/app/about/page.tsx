@@ -19,7 +19,7 @@ export default function AboutPage() {
       <SiteNav />
       <InnerHero
         eyebrow="Our Story"
-        title="Healthcare Recruiting Built on Trust"
+        title="Healthcare Talent Solutions Built on Trust"
         subtitle="WiseStream Health was founded with one belief: that the recruiting process should serve the people doing the work, not just the bottom line."
       />
 

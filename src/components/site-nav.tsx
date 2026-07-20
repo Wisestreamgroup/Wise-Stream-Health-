@@ -44,7 +44,7 @@ export function SiteNav() {
               WiseStream Health
             </span>
             <span className="font-semibold text-[0.72rem] tracking-[2px] uppercase" style={{ color: "var(--wsh-sky)" }}>
-              Healthcare Recruiting
+              Healthcare Talent Solutions
             </span>
           </div>
         </Link>
